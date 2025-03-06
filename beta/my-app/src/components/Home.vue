@@ -1,5 +1,6 @@
 <template>
-  <div class="bg-gradient-to-b from-red-100 via-green-100 to-blue-200 min-h-screen flex flex-col items-center justify-between p-4 relative overflow-hidden">
+  <div class="bg-gradient-to-b from-red-100 via-green-100 to-blue-200 min-h-screen flex flex-col items-center justify-between p-4 relative overflow-hidden"
+       :class="{ 'blur-effect': showBlurEffect && !aboutButtonClicked }">
     <!-- Background maple leaf pattern with transparency -->
     <div class="background-maple-pattern absolute inset-0 z-0 opacity-20">
       <div v-for="n in 20" :key="`bg-maple-${n}`" class="absolute" :style="getRandomBackgroundLeafStyle()">
@@ -108,19 +109,51 @@
     </div>
     
     <!-- Navigation Buttons moved to bottom with Font Awesome icons -->
-    <div class="flex flex-wrap justify-center gap-5 mb-8 mt-auto z-10">
+    <div class="flex flex-wrap justify-center gap-5 mb-8 mt-auto z-10 relative">
       <button class="curved-button books-button rapid-jiggle">
         <i class="fas fa-book mr-2"></i>
         <span class="button-text">Books</span>
       </button>
-      <button class="curved-button about-button rapid-jiggle">
+      
+      <!-- About Us button with special handling - no longer gets blurred -->
+      <div class="about-button-container relative" v-if="showBlurEffect && !aboutButtonClicked">
+        <button class="curved-button about-button rapid-jiggle" ref="aboutButton" @click="handleAboutClick">
+          <i class="fas fa-info-circle mr-2"></i>
+          <span class="button-text">About Us</span>
+        </button>
+        <!-- Clear circular area around the button -->
+        <div class="button-spotlight"></div>
+      </div>
+      
+      <!-- Regular About button when not in blur mode -->
+      <button v-else class="curved-button about-button rapid-jiggle" ref="aboutButton" @click="handleAboutClick">
         <i class="fas fa-info-circle mr-2"></i>
         <span class="button-text">About Us</span>
       </button>
+      
       <button class="curved-button contact-button rapid-jiggle">
         <i class="fas fa-envelope mr-2"></i>
         <span class="button-text">Contact Us</span>
       </button>
+      
+      <!-- Animated Arrow pointing to About button -->
+      <div v-if="showBlurEffect && !aboutButtonClicked" class="arrow-container z-20">
+        <div class="animated-arrow">
+          <i class="fas fa-arrow-right text-3xl text-red-600 arrow-icon"></i>
+          <div class="text-white font-bold bg-red-600 px-3 py-1 rounded-lg arrow-text">
+            Click Here!
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Overlay message when blurred -->
+    <div v-if="showBlurEffect && !aboutButtonClicked" class="fixed inset-0 flex items-center justify-center z-30 pointer-events-none">
+      <div class="bg-white bg-opacity-80 p-6 rounded-xl shadow-lg text-center max-w-md">
+        <h3 class="text-2xl text-green-600 font-bold mb-3">Welcome to Our Site!</h3>
+        <p class="text-lg mb-4">Please click the "About Us" button to continue exploring our website.</p>
+        <p class="text-sm text-gray-600">The page will remain blurred until you click the button.</p>
+      </div>
     </div>
   </div>
 </template>
@@ -128,7 +161,34 @@
 <script>
 export default {
   name: 'Home',
+  data() {
+    return {
+      showBlurEffect: false,
+      aboutButtonClicked: false,
+      blurTimer: null
+    }
+  },
+  mounted() {
+    // Set timer to activate blur effect after 30 seconds
+    this.blurTimer = setTimeout(() => {
+      this.showBlurEffect = true;
+    }, 30000); // 30 seconds
+  },
+  beforeUnmount() {
+    // Clear timer if component is unmounted
+    if (this.blurTimer) {
+      clearTimeout(this.blurTimer);
+    }
+  },
   methods: {
+    handleAboutClick() {
+      // Remove blur effect when About button is clicked
+      this.aboutButtonClicked = true;
+      this.showBlurEffect = false;
+      
+      // Add your about page navigation logic here
+      // For example: this.$router.push('/about');
+    },
     getRandomLeafStyle() {
       const startLeft = Math.random() * 100;
       const fallDuration = 7 + Math.random() * 15;
@@ -203,6 +263,118 @@ export default {
   }
 }
 </script>
+
+<style>
+/* Add these new styles for blur effect and arrow animation */
+.blur-effect {
+  filter: blur(5px);
+}
+
+/* Exception for the About button container */
+.about-button-container {
+  filter: none !important;
+  z-index: 100;
+}
+
+/* Create a circular spotlight effect around the button */
+.button-spotlight {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 30%, rgba(255,255,255,0) 70%);
+  pointer-events: none;
+  z-index: -1;
+  box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.6);
+  animation: pulse-spotlight 2s infinite alternate;
+}
+
+@keyframes pulse-spotlight {
+  0% {
+    box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 30px 15px rgba(255, 255, 255, 0.8);
+  }
+}
+
+.arrow-container {
+  position: absolute;
+  /* Position it initially pointing to the About button */
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 101; /* Make sure arrow is above blur */
+  filter: none !important; /* Ensure arrow is not blurred */
+}
+
+.animated-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: pointToButton 1.5s ease-in-out infinite;
+}
+
+.arrow-icon {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+  transform: rotate(90deg);
+  margin-bottom: 5px;
+}
+
+.arrow-text {
+  white-space: nowrap;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pointToButton {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+
+/* Background maple leaf floating animation */
+@keyframes bgLeafFloat {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-15px) rotate(15deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(15px) rotate(-15deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+</style>
 
 <style src="./button_mod.css"></style>
 <style src="./home.css"></style>
