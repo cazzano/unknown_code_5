@@ -1,0 +1,26 @@
+/* Add your existing styles from home.css and buttons.css here */
+
+/* New class for rapid jiggle animation */
+.rapid-jiggle {
+  animation: rapidJiggle 0.5s ease-in-out infinite !important;
+}
+
+@keyframes rapidJiggle {
+  0% {
+    transform: rotate(-2deg) translateY(0px);
+  }
+  25% {
+    transform: rotate(0deg) translateY(-2px);
+  }
+  50% {
+    transform: rotate(2deg) translateY(0px);
+  }
+  75% {
+    transform: rotate(0deg) translateY(2px);
+  }
+  100% {
+    transform: rotate(-2deg) translateY(0px);
+  }
+}
+
+/* You'll need to keep all your other styles from home.css and buttons.css here */

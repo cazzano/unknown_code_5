@@ -1,0 +1,125 @@
+/* buttons.css - Animation and styling for curved jiggling buttons */
+
+/* Base button styles with nice curves and gradients */
+.curved-button {
+  position: relative;
+  padding: 12px 24px;
+  margin: 5px;
+  min-width: 150px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  overflow: hidden;
+  text-align: center;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: jiggle 7s ease-in-out infinite;
+}
+
+/* Button specific colors matching the site theme */
+.books-button {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+  animation-delay: 0s;
+}
+
+.about-button {
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+  color: white;
+  animation-delay: 0.3s;
+}
+
+.contact-button {
+  background: linear-gradient(135deg, #1e88e5, #0d47a1);
+  color: white;
+  animation-delay: 0.6s;
+}
+
+/* Text styling inside buttons */
+.button-text {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hover effects for buttons */
+.curved-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.curved-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Button backgrounds with shine effect */
+.curved-button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  opacity: 0;
+  z-index: 1;
+}
+
+.curved-button:hover::before {
+  opacity: 1;
+}
+
+/* Jiggling animation */
+@keyframes jiggle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  2% {
+    transform: scale(1.03) rotate(-1deg);
+  }
+  4% {
+    transform: scale(1.03) rotate(1.5deg);
+  }
+  6% {
+    transform: scale(1.03) rotate(-1.5deg);
+  }
+  8% {
+    transform: scale(1.03) rotate(1deg);
+  }
+  10% {
+    transform: scale(1) rotate(0deg);
+  }
+  /* Long pause before next jiggle */
+  70% {
+    transform: scale(1) rotate(0deg);
+  }
+  72% {
+    transform: scale(1.02) rotate(-1deg);
+  }
+  74% {
+    transform: scale(1.02) rotate(1deg);
+  }
+  76% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Media queries for responsive button sizes */
+@media (max-width: 640px) {
+  .curved-button {
+    min-width: 120px;
+    padding: 10px 16px;
+    font-size: 1rem;
+  }
+}
