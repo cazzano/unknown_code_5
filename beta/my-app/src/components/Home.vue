@@ -107,15 +107,18 @@
       </div>
     </div>
     
-    <!-- Navigation Buttons moved to bottom -->
+    <!-- Navigation Buttons moved to bottom with Font Awesome icons -->
     <div class="flex flex-wrap justify-center gap-5 mb-8 mt-auto z-10">
       <button class="curved-button books-button rapid-jiggle">
+        <i class="fas fa-book mr-2"></i>
         <span class="button-text">Books</span>
       </button>
       <button class="curved-button about-button rapid-jiggle">
+        <i class="fas fa-info-circle mr-2"></i>
         <span class="button-text">About Us</span>
       </button>
       <button class="curved-button contact-button rapid-jiggle">
+        <i class="fas fa-envelope mr-2"></i>
         <span class="button-text">Contact Us</span>
       </button>
     </div>
